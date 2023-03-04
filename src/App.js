@@ -1,23 +1,54 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import "./App.css";
+import Title from "./components/title";
+import Modal from "./components/modal";
+import EventList from "./components/eventList";
+import NewEventForm from "./components/newEventForm";
 
 function App() {
+  const [showModal, setShowModal] = useState(true);
+  const [showEvents, setShowEvents] = useState(true);
+  const [events, setEvents] = useState([]);
+
+  const addEvent = (event) => {
+    setEvents((prevEvents) => {
+      return [...prevEvents, event];
+    });
+    setShowModal(false);
+  };
+
+  const subtitle = "All the latest events in Marioland";
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Title title="Events in Your Area" subtitle={subtitle} />
+      {showEvents && (
+        <div>
+          <button onClick={() => setShowEvents(false)}>hide events</button>
+        </div>
+      )}
+
+      {!showEvents && (
+        <div>
+          <button onClick={() => setShowEvents(true)}>show events</button>
+        </div>
+      )}
+
+      {showEvents && <EventList events={events} setEvents={setEvents} />}
+
+      {showModal && (
+        <Modal isSalesModal={true}>
+          <NewEventForm addEvent={addEvent} />
+        </Modal>
+      )}
+
+      {!showModal && (
+        <div>
+          <button onClick={() => setShowModal(true)} className="show-modal">
+            Add New Event
+          </button>
+        </div>
+      )}
     </div>
   );
 }
